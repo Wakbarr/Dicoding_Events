@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:id="@+id/navigation_available_event"
+        android:icon="@drawable/baseline_event_available_24"
+        android:title="@string/available_event" />
+
+    <item
+        android:id="@+id/navigation_finished_event"
+        android:icon="@drawable/baseline_event_busy_24"
+        android:title="@string/finished_event" />
+
+</menu>

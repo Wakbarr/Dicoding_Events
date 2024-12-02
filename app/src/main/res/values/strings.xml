@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Dicoding Event 2024</string>
+    <string name="title_home">Home</string>
+    <string name="available_event">Event yang Tersedia</string>
+    <string name="finished_event">Event yang Selesai</string>
+    <string name="event_name_template">Event Name</string>
+    <string name="date_item_template">Date: October 11, 2024</string>
+    <string name="location_item_template">Location: Jakarta</string>
+    <string name="image_desc">Image Event</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="image_desc_event">Image Event</string>
+    <string name="detail_title">Detail Event</string>
+    <string name="owner_dummy">Penyelenggara</string>
+    <string name="location_dummy">Lokasi</string>
+    <string name="kuota_peserta_dummy">Kuota</string>
+    <string name="waktu_mulai_title">Waktu Mulai</string>
+    <string name="waktu_berakhir_title">Waktu Berakhir</string>
+    <string name="sisa_kuota_title">Sisa Kuota :</string>
+    <string name="button_text">Register here</string>
+    <string name="deskripsi_title">Deskripsi</string>
+    <string name="title_available_home">Event yang Tersedia</string>
+    <string name="title_finished_home">Event yang Selesai</string>
+</resources>

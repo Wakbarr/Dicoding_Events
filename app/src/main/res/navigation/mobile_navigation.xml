@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/navigation_available_event">
+
+    <fragment
+        android:id="@+id/navigation_available_event"
+        android:name="com.dicoding.dicodingevent.ui.availableEvent.AvailableFragment"
+        android:label="@string/available_event"
+        tools:layout="@layout/fragment_available">
+        <action
+            android:id="@+id/action_availableFragment_to_detailFragment"
+            app:destination="@id/detailFragment" >
+            <argument
+                android:name="eventId"
+                app:argType="integer" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_finished_event"
+        android:name="com.dicoding.dicodingevent.ui.finishedEvent.FinishedFragment"
+        android:label="@string/finished_event"
+        tools:layout="@layout/fragment_finished" >
+        <action
+            android:id="@+id/action_navigation_finished_event_to_detailFragment"
+            app:destination="@id/detailFragment" >
+            <argument
+                android:name="eventId"
+                app:argType="integer" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.dicoding.dicodingevent.ui.detailEvent.DetailFragment"
+        android:label="Detail Event"
+        tools:layout="@layout/fragment_detail" />
+</navigation>
