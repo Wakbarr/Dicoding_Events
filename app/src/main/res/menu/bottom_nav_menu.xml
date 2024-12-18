@@ -12,4 +12,10 @@
         android:icon="@drawable/baseline_event_busy_24"
         android:title="@string/finished_event" />
 
+    <item
+        android:id="@+id/favorite_nav"
+        android:icon="@drawable/baseline_event_busy_24"
+        android:title="@string/finished_event" />
+
+
 </menu>

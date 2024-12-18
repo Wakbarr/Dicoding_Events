@@ -16,25 +16,33 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.dicoding.dicodingevent.R
 import com.dicoding.dicodingevent.databinding.FragmentDetailBinding
+import com.dicoding.dicodingevent.services.data.FavoriteDao
+import com.dicoding.dicodingevent.services.data.FavoriteDatabase
+import com.dicoding.dicodingevent.services.data.FavoriteEvent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-
 
 class DetailFragment : Fragment() {
 
     private var eventId: Int? = null
     private var _binding: FragmentDetailBinding? = null
     private val binding get() = _binding!!
+    private var imageurl: String? = null
 
+    private lateinit var favoritdao: FavoriteDao
+    private lateinit var db: FavoriteDatabase
     private lateinit var viewModel: DetailViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true) //set button back
+        setHasOptionsMenu(true) // Set button back
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,6 +52,10 @@ class DetailFragment : Fragment() {
 
         // Initialize ViewModel
         viewModel = ViewModelProvider(this)[DetailViewModel::class.java]
+
+        // Initialize Database and DAO
+        db = FavoriteDatabase.getDatabase(requireContext())
+        favoritdao = db.favoriteDao()
 
         // Observe error messages from ViewModel
         viewModel.errorMessage.observe(viewLifecycleOwner) { message ->
@@ -55,8 +67,54 @@ class DetailFragment : Fragment() {
             showLoading(isLoading) // Show or hide loading based on LiveData
         }
 
-        // Inflate the layout for this fragment
-        return binding.root // Menggunakan binding.root di sini
+        return binding.root // Inflate layout
+    }
+
+    private fun addFavorite() {
+        val favoriteEvent = FavoriteEvent(
+            id = eventId.toString(),
+            name = binding.eventName.text.toString(),
+            category = binding.eventCategory.text.toString(),
+            logo = "",
+            imageUrl = imageurl.toString()
+        )
+        CoroutineScope(Dispatchers.IO).launch {
+            favoritdao.addFavorite(favoriteEvent)
+            CoroutineScope(Dispatchers.Main).launch {
+                Toast.makeText(requireContext(), "Event ditambahkan ke favorit", Toast.LENGTH_SHORT).show()
+                checkFavoriteStatus()
+            }
+        }
+    }
+
+    private fun removeFavorite() {
+        CoroutineScope(Dispatchers.IO).launch {
+            eventId?.let {
+                val favoriteEvent = favoritdao.getFavorite(it.toString())
+                if (favoriteEvent != null) {
+                    favoritdao.removeFavorite(favoriteEvent)
+                    CoroutineScope(Dispatchers.Main).launch {
+                        Toast.makeText(requireContext(), "Event dihapus dari favorit", Toast.LENGTH_SHORT).show()
+                        checkFavoriteStatus()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun checkFavoriteStatus() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val favoriteEvent = favoritdao.getFavorite(eventId.toString())
+            CoroutineScope(Dispatchers.Main).launch {
+                if (favoriteEvent != null) {
+                    binding.favoritEvent.setImageResource(R.drawable.baseline_event_available_24)
+                    binding.favoritEvent.setOnClickListener { removeFavorite() }
+                } else {
+                    binding.favoritEvent.setImageResource(R.drawable.baseline_event_busy_24)
+                    binding.favoritEvent.setOnClickListener { addFavorite() }
+                }
+            }
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -69,7 +127,10 @@ class DetailFragment : Fragment() {
         }
 
         // Load detail event
-        eventId?.let { viewModel.loadDetailEvent(it) }
+        eventId?.let {
+            viewModel.loadDetailEvent(it)
+            checkFavoriteStatus()
+        }
 
         // Observe LiveData dari ViewModel untuk memperbarui UI
         viewModel.eventData.observe(viewLifecycleOwner) { event ->
@@ -81,10 +142,11 @@ class DetailFragment : Fragment() {
                 binding.eventCategory.text = it.category
                 binding.eventOwner.text = it.ownerName
                 binding.eventLocation.text = it.cityName
-                binding.eventQuota.text = it.quota.toString() + " Peserta"
+                binding.eventQuota.text = "${it.quota} Peserta"
                 binding.eventBeginTime.text = formatDate(it.beginTime)
                 binding.eventEndTime.text = formatDate(it.endTime)
                 binding.eventQuotaValue.text = (it.quota - it.registrants).toString()
+                imageurl = it.mediaCover.toString()
 
                 // Memuat gambar menggunakan Glide
                 Glide.with(this)
@@ -104,21 +166,17 @@ class DetailFragment : Fragment() {
     }
 
     private fun formatDate(dateString: String): String {
-        // Format input sesuai dengan format yang diterima
         val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-        // Format output sesuai keinginan
         val outputFormat = SimpleDateFormat("dd MMMM yyyy 'Pukul' HH.mm", Locale("id", "ID"))
 
         return try {
             val date: Date = inputFormat.parse(dateString) ?: Date()
             outputFormat.format(date)
         } catch (e: Exception) {
-            // Jika terjadi kesalahan dalam parsing, kembalikan string asli
             dateString
         }
     }
 
-    // Handle loading state
     private fun showLoading(isLoading: Boolean) {
         binding.progressBarDetail.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
@@ -127,16 +185,18 @@ class DetailFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                findNavController().navigateUp() // Navigasi kembali menggunakan NavController
+                findNavController().navigateUp()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null // Menghindari memory leak
+        _binding = null
+    }
+    companion object {
+        const val ExTraId = " kosong "
     }
 }

@@ -38,4 +38,10 @@
         android:name="com.dicoding.dicodingevent.ui.detailEvent.DetailFragment"
         android:label="Detail Event"
         tools:layout="@layout/fragment_detail" />
+
+    <fragment
+        android:id="@+id/favorite_nav"
+        android:name="com.dicoding.dicodingevent.ui.tampilListFragment"
+        android:label="Tampil List"
+        tools:layout="@layout/fragment_tampil_list" />
 </navigation>
