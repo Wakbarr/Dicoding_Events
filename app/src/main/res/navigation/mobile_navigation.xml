@@ -44,4 +44,10 @@
         android:name="com.dicoding.dicodingevent.ui.tampilListFragment"
         android:label="Tampil List"
         tools:layout="@layout/fragment_tampil_list" />
+
+    <fragment
+        android:id="@+id/navigation_settings_event"
+        android:name="com.dicoding.dicodingevent.ui.theme.DarkModeSettingFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_dark_mode_setting" />
 </navigation>

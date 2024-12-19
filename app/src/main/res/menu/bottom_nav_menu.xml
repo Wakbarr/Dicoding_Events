@@ -16,6 +16,9 @@
         android:id="@+id/favorite_nav"
         android:icon="@drawable/baseline_event_busy_24"
         android:title="@string/finished_event" />
-
+    <item
+        android:id="@+id/navigation_settings_event"
+        android:icon="@drawable/baseline_event_available_24"
+        android:title="@string/app_name" />
 
 </menu>
