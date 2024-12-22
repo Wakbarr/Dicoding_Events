@@ -44,6 +44,13 @@
         android:name="com.dicoding.dicodingevent.ui.tampilListFragment"
         android:label="Tampil List"
         tools:layout="@layout/fragment_tampil_list" />
+    <action
+        android:id="@+id/action_favorite_nav_to_detailFragment"
+        app:destination="@id/detailFragment">
+        <argument
+            android:name="eventId"
+            app:argType="integer" />
+    </action>
 
     <fragment
         android:id="@+id/navigation_settings_event"
